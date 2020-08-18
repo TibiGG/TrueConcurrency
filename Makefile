@@ -1,19 +1,34 @@
+all: picture_lib concurrent_picture_lib blur_opt_exprmt
 
-picture_lib: Main.o Utils.o Picture.o PicProcess.o
-	gcc sod_118/sod.c Main.o Utils.o Picture.o PicProcess.o -I sod_118 -lm -std=c99 -o picture_lib
-	
+picture_lib: SeqMain.o Utils.o Picture.o PicProcess.o
+	gcc sod_118/sod.c SeqMain.o Utils.o Picture.o PicProcess.o -I sod_118 -lm -o picture_lib
+
+concurrent_picture_lib: ConcMain.o Utils.o Picture.o PicProcess.o PicStore.o
+	gcc sod_118/sod.c ConcMain.o Utils.o Picture.o PicProcess.o PicStore.o -I sod_118 -lm -lpthread -o concurrent_picture_lib
+
+blur_opt_exprmt: BlurExprmt.o Utils.o Picture.o PicProcess.o ThreadList.o
+	gcc sod_118/sod.c BlurExprmt.o Utils.o Picture.o PicProcess.o ThreadList.o -I sod_118 -lm -lpthread -o blur_opt_exprmt
+
+ThreadList.o: ThreadList.h ThreadList.c
+
 Utils.o: Utils.h Utils.c
 
 Picture.o: Utils.h Picture.h Picture.c
 
-PicProcess.o: Utils.h PicProcess.h PicProcess.c
+PicProcess.o: Utils.h Picture.h PicProcess.h PicProcess.c
 
-Main.o: Main.c Utils.h Picture.h PicProcess.h
+SeqMain.o: SeqMain.c Utils.h Picture.h PicProcess.h
+
+PicStore.o: Utils.h Picture.h PicStore.h PicStore.c
+
+ConcMain.o: ConcMain.c Utils.h Picture.h PicProcess.h PicStore.h
+
+BlurExprmt.o: BlurExprmt.c Utils.h Picture.h PicProcess.h
 
 %.o: %.c
-	gcc -c -I sod_118 -std=c99 $<
+	gcc -c -I sod_118 -lm -lpthread $<
 
 clean:
-	rm -rf picture_lib *.o
+	rm -rf picture_lib concurrent_picture_lib blur_opt_exprmt *.o
 
-.PHONY: clean
+.PHONY: all clean

@@ -21,13 +21,13 @@ struct picture {
 };
 
 // initialise picture struct with image from a provided file
-void init_picture_from_file(struct picture *pic, const char *path);
+bool init_picture_from_file(struct picture *pic, const char *path);
 
 // initialise picture struct of the specified size
-void init_picture_from_size(struct picture *pic, int width, int height);
+bool init_picture_from_size(struct picture *pic, int width, int height);
 
 // save picture to specified file
-void save_picture_to_file(struct picture *pic, const char *path);
+bool save_picture_to_file(struct picture *pic, const char *path);
 
 // extract a single pixel from the image as a colour struct
 struct pixel get_pixel(struct picture *pic, int x, int y);
@@ -38,7 +38,7 @@ void set_pixel(struct picture *pic, int x, int y, struct pixel *rgb);
 // check if coordinates are within bounds of the stored image
 bool contains_point(struct picture *pic, int x, int y);
 
-// Free the memory used by picture provided as argument
-void free_picture(struct picture *pic);
+// clean up the underlying image representation
+void clear_picture(struct picture *pic);
 
 #endif
